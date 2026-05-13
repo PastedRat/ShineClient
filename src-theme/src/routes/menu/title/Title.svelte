@@ -27,8 +27,8 @@
 
             if (clientUpdate.update) {
                 notification.set({
-                    title: `LiquidBounce ${clientUpdate.update.clientVersion} has been released!`,
-                    message: `Download it from liquidbounce.net!`,
+                    title: `Shine Client ${clientUpdate.update.clientVersion} has been released!`,
+                    message: `Download it from shineclient.net!`,
                     error: false,
                     delay: 99999999
                 });
@@ -68,7 +68,7 @@
                         <ChildButton title="Realms" icon="realms" {parentHovered}
                                      on:click={() => openScreen("multiplayer_realms")}/>
                     </MainButton>
-                    <MainButton title="LiquidBounce" icon="liquidbounce" on:click={toggleButtons} index={2}/>
+                    <MainButton title="Shine Client" icon="liquidbounce" on:click={toggleButtons} index={2}/>
                     <MainButton title="Options" icon="options" on:click={() => openScreen("options")} index={3}/>
                 {:else if clientButtonsShown}
                     <MainButton title="Proxy Manager" icon="proxymanager" on:click={() => openScreen("proxymanager")}
@@ -94,7 +94,7 @@
                     <IconButton title="Discord" icon="discord" on:click={() => browse("MAINTAINER_DISCORD")}/>
                     <IconButton title="Twitter" icon="twitter" on:click={() => browse("MAINTAINER_TWITTER")}/>
                     <IconButton title="YouTube" icon="youtube" on:click={() => browse("MAINTAINER_YOUTUBE")}/>
-                    <IconTextButton title="liquidbounce.net" icon="icon-liquidbounce.net.svg"
+                    <IconTextButton title="shineclient.net" icon="icon-liquidbounce.net.svg"
                                     on:click={() => browse("CLIENT_WEBSITE")}/>
                 </ButtonContainer>
             </div>
@@ -106,6 +106,27 @@
     .title-screen {
         position: relative;
         isolation: isolate;
+        overflow: hidden;
+    }
+
+    .title-screen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background: radial-gradient(circle at 12% 30%, rgba(100, 231, 255, 0.25), transparent 36%),
+            radial-gradient(circle at 88% 58%, rgba(247, 229, 119, 0.2), transparent 30%),
+            linear-gradient(125deg, #01040f 0%, #020819 45%, #01040c 100%);
+    }
+
+    .title-screen::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1.1px, transparent 1.2px);
+        background-size: 52px 52px;
+        opacity: 0.45;
     }
 
     .content {

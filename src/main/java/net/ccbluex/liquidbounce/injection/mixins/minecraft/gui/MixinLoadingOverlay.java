@@ -53,7 +53,7 @@ public abstract class MixinLoadingOverlay {
 
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
-        textureManager.registerAndLoad(ClientLogoTexture.CLIENT_LOGO, new ClientLogoTexture());
+        // Disabled custom banner texture to avoid legacy branding during load screen.
     }
 
     @Inject(method = "extractRenderState", at = @At("RETURN"))
@@ -63,7 +63,7 @@ public abstract class MixinLoadingOverlay {
 
     @WrapWithCondition(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIIIIII)V"))
     private boolean drawMojangLogo(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier sprite, int x, int y, float u, float v, int width, int height, int regionWidth, int regionHeight, int textureWidth, int textureHeight, int color) {
-        return HideAppearance.INSTANCE.isHidingNow();
+        return false;
     }
 
     @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/ReloadInstance;getActualProgress()F"))
@@ -80,7 +80,9 @@ public abstract class MixinLoadingOverlay {
             return;
         }
 
-        int screenWidth = graphics.guiWidth();
+        return;
+
+        /* int screenWidth = graphics.guiWidth();
         int screenHeight = graphics.guiHeight();
 
         float scaleFactor = Math.min(screenWidth * 0.4f / ClientLogoTexture.WIDTH, screenHeight * 0.25f / ClientLogoTexture.HEIGHT);
@@ -106,7 +108,7 @@ public abstract class MixinLoadingOverlay {
                 ClientLogoTexture.WIDTH,
                 ClientLogoTexture.HEIGHT,
                 color
-        );
+        ); */
     }
 
     @ModifyExpressionValue(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;BRAND_BACKGROUND:Ljava/util/function/IntSupplier;", opcode = Opcodes.GETSTATIC))
