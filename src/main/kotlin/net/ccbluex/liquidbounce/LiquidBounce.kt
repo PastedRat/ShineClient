@@ -109,7 +109,7 @@ object LiquidBounce : EventListener {
      *
      * WARNING: Please read the GNU General Public License
      */
-    const val CLIENT_NAME = "LiquidBounce"
+    const val CLIENT_NAME = "Shine Client"
     const val CLIENT_AUTHOR = "CCBlueX"
 
     private object Client : Config("Client") {

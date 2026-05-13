@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "liquidbounce",
   "version": "${version}",
-  "name": "LiquidBounce",
+  "name": "Shine Client",
   "description": "A free mixin-based injection hacked-client for Minecraft using the Fabric modding toolchain.",
   "authors": [
     "CCBlueX"
@@ -12,7 +12,7 @@
     "homepage": "https://liquidbounce.net/",
     "sources": "https://github.com/CCBlueX/LiquidBounce/",
     "issues": "https://github.com/CCBlueX/LiquidBounce/issues",
-    "email": "support@liquidbounce.net"
+    "email": "support@shineclient.net"
   },
   "license": "GNU General Public License v3.0",
   "icon": "resources/liquidbounce/icon_64x64.png",

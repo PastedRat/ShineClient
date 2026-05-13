@@ -18,6 +18,17 @@
     let minecraftScaleFactor = $state(2);
     let clickGuiScaleFactor = $state(1);
 
+    type Star = { left: number; size: number; duration: number; delay: number; opacity: number; };
+
+    const stars: Star[] = Array.from({length: 70}, () => ({
+        left: Math.random() * 100,
+        size: Math.random() * 2.8 + 1,
+        duration: Math.random() * 10 + 10,
+        delay: Math.random() * -20,
+        opacity: Math.random() * 0.65 + 0.2
+    }));
+
+
     $effect(() => {
         $scaleFactor = minecraftScaleFactor * clickGuiScaleFactor;
     });
@@ -57,6 +68,12 @@
     });
 </script>
 
+<div class="starfield" aria-hidden="true">
+    {#each stars as star}
+        <span class="star" style="left: {star.left}%; width: {star.size}px; height: {star.size}px; opacity: {star.opacity}; animation-duration: {star.duration}s; animation-delay: {star.delay}s;"></span>
+    {/each}
+</div>
+
 <div
         class="tabbed-clickgui"
         class:grid={$showGrid}
@@ -74,8 +91,29 @@
 
   $GRID_SIZE: 10px;
 
+  .starfield {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    .star {
+      position: absolute;
+      top: -8vh;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #fff 0%, #d9f3ff 45%, rgba(255,255,255,0) 100%);
+      animation: fall linear infinite;
+    }
+  }
+
+  @keyframes fall {
+    from { transform: translate3d(0, -10vh, 0); }
+    to { transform: translate3d(-9vw, 110vh, 0); }
+  }
+
   .tabbed-clickgui {
-    background-color: var(--clickgui-overlay-background-color);
+    background: radial-gradient(circle at 14% 30%, rgba(95, 224, 255, 0.26), transparent 35%),
+      radial-gradient(circle at 86% 62%, rgba(245, 228, 104, 0.2), transparent 35%),
+      var(--clickgui-overlay-background-color);
     overflow: hidden;
     position: absolute;
     will-change: opacity;

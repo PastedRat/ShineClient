@@ -15,6 +15,7 @@
 </script>
 
 <div class="tabs">
+    <div class="shine-brand"><span>★</span> Shine Client</div>
     <div class="available-tabs">
         {#each tabs as tab, index (tab.title)}
             <button
@@ -36,6 +37,23 @@
 </div>
 
 <style lang="scss">
+
+    .shine-brand {
+    position: fixed;
+    top: 15px;
+    left: 20px;
+    z-index: 10000000000;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #f7fbff;
+
+    span {
+      color: #f6e67e;
+      margin-right: 8px;
+      text-shadow: 0 0 12px rgba(246, 230, 126, 0.65);
+    }
+  }
 
   .available-tabs {
     position: fixed;

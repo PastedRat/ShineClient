@@ -53,7 +53,7 @@
 
     <div class="message">
         <div>Thank you for <span>{anniversary} Years</span></div>
-        <div>of LiquidBounce!</div>
+        <div>of Shine Client!</div>
     </div>
 </div>
 

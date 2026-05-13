@@ -106,7 +106,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
     private val buttons = jsonArrayOf(
         jsonObject {
             "label"("Website")
-            "url"("https://liquidbounce.net")
+            "url"("https://shineclient.net")
         },
         jsonObject {
             "label"("LiquidProxy")
@@ -291,7 +291,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
         override val tag: String,
         val assetValue: String?,
     ) : Tagged {
-        LOGO("Logo", "liquidbounce"),
+        LOGO("Logo", "shine_client"),
     }
 
 }
