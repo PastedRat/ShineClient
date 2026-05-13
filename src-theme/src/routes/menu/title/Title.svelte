@@ -2,6 +2,7 @@
     import MainButton from "./buttons/MainButton.svelte";
     import ChildButton from "./buttons/ChildButton.svelte";
     import ConfettiBackground from "./ConfettiBackground.svelte";
+    import FallingStarsBackground from "./FallingStarsBackground.svelte";
     import ButtonContainer from "../common/buttons/ButtonContainer.svelte";
     import IconTextButton from "../common/buttons/IconTextButton.svelte";
     import IconButton from "../common/buttons/IconButton.svelte";
@@ -52,12 +53,18 @@
 </script>
 
 <div class="title-screen">
+    <FallingStarsBackground />
+
     {#if isAnniversary()}
         <ConfettiBackground />
     {/if}
 
     <Menu>
         <div class="content">
+            <div class="shine-title" transition:fly|global={{duration: 700, y: -50}}>
+                <h1>Shine Client</h1>
+                <p>Launch brighter. Play sharper.</p>
+            </div>
             <div class="main-buttons">
                 {#if regularButtonsShown}
                     <MainButton title="Singleplayer" icon="singleplayer" index={0}
@@ -112,10 +119,35 @@
         flex: 1;
         display: grid;
         grid-template-areas:
+            "title ."
             "a ."
             "b c";
-        grid-template-rows: 1fr max-content;
+        grid-template-rows: max-content 1fr max-content;
         grid-template-columns: 1fr max-content;
+        row-gap: 24px;
+    }
+
+    .shine-title {
+        grid-area: title;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+    }
+
+    .shine-title h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 5vw, 4.6rem);
+        font-weight: 800;
+        color: #f5fbff;
+        text-shadow: 0 0 24px rgb(120 200 255 / 75%);
+    }
+
+    .shine-title p {
+        margin: 0;
+        font-size: 0.92rem;
+        color: rgb(190 220 255 / 90%);
     }
 
     .main-buttons {
