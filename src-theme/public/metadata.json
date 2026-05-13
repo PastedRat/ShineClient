@@ -1,10 +1,10 @@
 {
-  "id": "liquidbounce",
-  "name": "LiquidBounce",
+  "id": "shineclient",
+  "name": "Shine Client",
   "version": "0.1.0",
   "authors": ["CCBlueX"],
   "colors": {
-    "Accent": "#4677ff",
+    "Accent": "#f4df71",
     "Tint": "#000000"
   },
   "screens": [

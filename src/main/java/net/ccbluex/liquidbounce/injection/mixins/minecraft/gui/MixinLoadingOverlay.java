@@ -23,14 +23,14 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.ccbluex.liquidbounce.common.ClientLogoTexture;
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.events.ScreenRenderEvent;
 import net.ccbluex.liquidbounce.features.misc.HideAppearance;
-import net.ccbluex.liquidbounce.render.ClientRenderPipelines;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.objectweb.asm.Opcodes;
@@ -49,7 +49,16 @@ import java.util.function.IntSupplier;
 public abstract class MixinLoadingOverlay {
 
     @Unique
-    private static final IntSupplier CLIENT_ARGB = () -> ARGB.color(255, 24, 26, 27);
+    private static final IntSupplier CLIENT_ARGB = () -> ARGB.color(255, 4, 8, 18);
+
+    @Unique
+    private static final int STAR_COLOR = ARGB.color(255, 244, 223, 113);
+
+    @Unique
+    private static final int TEXT_COLOR = ARGB.color(255, 245, 251, 255);
+
+    @Unique
+    private static final int SUBTITLE_COLOR = ARGB.color(210, 190, 220, 255);
 
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
@@ -80,35 +89,13 @@ public abstract class MixinLoadingOverlay {
             return;
         }
 
-        return;
+        int centerX = graphics.guiWidth() / 2;
+        int centerY = graphics.guiHeight() / 2;
+        var font = Minecraft.getInstance().font;
 
-        /* int screenWidth = graphics.guiWidth();
-        int screenHeight = graphics.guiHeight();
-
-        float scaleFactor = Math.min(screenWidth * 0.4f / ClientLogoTexture.WIDTH, screenHeight * 0.25f / ClientLogoTexture.HEIGHT);
-
-        int displayWidth = (int)(ClientLogoTexture.WIDTH * scaleFactor);
-        int displayHeight = (int)(ClientLogoTexture.HEIGHT * scaleFactor);
-
-        int x = (screenWidth - displayWidth) / 2;
-        int y = (screenHeight - displayHeight) / 2;
-
-        // TODO: Draw as SVG instead of PNG
-        graphics.blit(
-            ClientRenderPipelines.JCEF.SMOOTH_TEXTURE,
-                ClientLogoTexture.CLIENT_LOGO,
-                x,
-                y,
-                0.0F,
-                0.0F,
-                displayWidth,
-                displayHeight,
-                ClientLogoTexture.WIDTH,
-                ClientLogoTexture.HEIGHT,
-                ClientLogoTexture.WIDTH,
-                ClientLogoTexture.HEIGHT,
-                color
-        ); */
+        graphics.centeredText(font, Component.literal("★"), centerX, centerY - 62, STAR_COLOR);
+        graphics.centeredText(font, Component.literal("SHINE CLIENT"), centerX, centerY - 40, TEXT_COLOR);
+        graphics.centeredText(font, Component.literal("Loading the stars..."), centerX, centerY - 20, SUBTITLE_COLOR);
     }
 
     @ModifyExpressionValue(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;BRAND_BACKGROUND:Ljava/util/function/IntSupplier;", opcode = Opcodes.GETSTATIC))
