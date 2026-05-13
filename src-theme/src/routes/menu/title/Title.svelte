@@ -116,7 +116,7 @@
         z-index: -2;
         background: radial-gradient(circle at 12% 30%, rgba(100, 231, 255, 0.25), transparent 36%),
             radial-gradient(circle at 88% 58%, rgba(247, 229, 119, 0.2), transparent 30%),
-            linear-gradient(125deg, #020b1e 0%, #041330 42%, #020816 100%);
+            linear-gradient(125deg, #01040f 0%, #020819 45%, #01040c 100%);
     }
 
     .title-screen::after {

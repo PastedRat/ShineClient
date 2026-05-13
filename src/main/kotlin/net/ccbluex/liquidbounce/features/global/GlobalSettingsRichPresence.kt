@@ -59,7 +59,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
 
     private const val IPC_APP_ID = 443472046031110144L
 
-    private val activityType by enumChoice("ActivityType", PresenceActivityType.COMPETING)
+    private val activityType by enumChoice("ActivityType", PresenceActivityType.PLAYING)
     private val statusDisplayType by enumChoice("StatusDisplayType", PresenceStatusDisplayType.NAME)
 
     private val separatorText by text("Separator", " - ")
@@ -78,7 +78,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
     private object LargeImageConfig : ToggleableValueGroup(
         parent = this,
         name = "LargeImage",
-        enabled = true,
+        enabled = false,
     ) {
         val asset by enumChoice("Asset", PresenceAsset.LOGO)
         val parts by multiEnumChoice(
