@@ -142,7 +142,18 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
     }
 
         val cloudTint by color("CloudTint", Color4b.WHITE)
+        val enableNightMode by boolean("EnableNightMode", false)
+        val nightFogStart by float("NightFogStart", 0.0f, 0.0f..128f)
+        val nightFogEnd by float("NightFogEnd", 25.0f, 1.0f..256f)
+        val skyImagePath by text("SkyImagePath", "")
         fun resolveCloudTint(): Color4b = scaled(cloudTint)
+
+
+        fun resolveNightFogColor(): Color4b = Color4b(3, 3, 8, 255)
+
+        fun useNightFogProfile(): Boolean = running && enableNightMode
+
+        fun hasCustomSkyImage(): Boolean = skyImagePath.isNotBlank()
     init {
         tree(Precipitation)
         tree(FogValueGroup)
