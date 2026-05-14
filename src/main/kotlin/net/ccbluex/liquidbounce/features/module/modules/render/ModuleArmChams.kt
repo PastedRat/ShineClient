@@ -12,10 +12,13 @@ object ModuleArmChams : ClientModule("ArmChams", ModuleCategories.RENDER) {
     private val gradientSpeed by float("GradientSpeed", 1.6f, 0.1f..6f)
     private val alpha by int("Alpha", 180, 1..255)
     private val fullBright by boolean("FullBright", true)
+    private val affectHeldItems by boolean("AffectHeldItems", true)
 
     fun shouldApply() = running
 
     fun isFullBright() = fullBright
+
+    fun shouldAffectHeldItems() = affectHeldItems
 
     fun getActiveColor(): Color4b {
         val c = if (gradient) {

@@ -74,13 +74,19 @@ public abstract class MixinItemInHandRenderer {
         int overlayCoords, int outlineColor, Operation<Void> original, LivingEntity mob, ItemStack itemStack,
         ItemDisplayContext type
     ) {
+        int appliedLight = lightCoords;
+        if (type.firstPerson() && ModuleArmChams.INSTANCE.shouldApply() && ModuleArmChams.INSTANCE.shouldAffectHeldItems()) {
+            appliedLight = ModuleArmChams.INSTANCE.isFullBright() ? 0x00F000F0 : lightCoords;
+        }
+        final int finalAppliedLight = appliedLight;
+
         if (itemStack.getItem() instanceof ShieldItem && type.firstPerson()) {
             FirstPersonShieldTint.render(
-                () -> original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor));
+                () -> original.call(instance, poseStack, submitNodeCollector, finalAppliedLight, overlayCoords, outlineColor));
             return;
         }
 
-        original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+        original.call(instance, poseStack, submitNodeCollector, finalAppliedLight, overlayCoords, outlineColor);
     }
 
     @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER))
