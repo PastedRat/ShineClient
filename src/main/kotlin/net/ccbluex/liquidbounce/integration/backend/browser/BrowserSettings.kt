@@ -75,6 +75,7 @@ object GlobalBrowserSettings : ValueGroup("GuiRenderer"), EventListener {
 open class BrowserSettings(
     fpsLimit: Int = 0,
     update: Runnable,
+    val useAcceleratedPaint: Boolean = true,
 ) : ValueGroup("Renderer") {
 
     /**
