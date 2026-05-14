@@ -68,8 +68,6 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
         private var uboDirty = true
         private fun <T : Any> Value<T>.markDirtyOnChanged() = onChanged { uboDirty = true }
 
-        private val sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR, false)
-
         private fun getActiveBlendColor(): Color4b {
             return blendColor
         }
@@ -103,6 +101,7 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
                 { "$name Pass" },
                 clearColor = optional(-1),
             ).use { pass ->
+                val sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR, false)
                 pass.setPipeline(ClientRenderPipelines.ItemChams)
 
                 pass.bindTexture("texture0", textureView, sampler)
