@@ -109,5 +109,11 @@
   .hud {
     height: 100vh;
     width: 100vw;
+    background-color: transparent;
+    pointer-events: none;
+  }
+  
+  .hud > * {
+    pointer-events: auto;
   }
 </style>
