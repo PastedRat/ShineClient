@@ -23,9 +23,11 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.ccbluex.liquidbounce.common.ClientLogoTexture;
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.events.ScreenRenderEvent;
 import net.ccbluex.liquidbounce.features.misc.HideAppearance;
+import net.ccbluex.liquidbounce.render.ClientRenderPipelines;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.LoadingOverlay;
@@ -52,17 +54,17 @@ public abstract class MixinLoadingOverlay {
     private static final IntSupplier CLIENT_ARGB = () -> ARGB.color(255, 4, 8, 18);
 
     @Unique
-    private static final int STAR_COLOR = ARGB.color(255, 244, 223, 113);
-
-    @Unique
     private static final int TEXT_COLOR = ARGB.color(255, 245, 251, 255);
 
     @Unique
     private static final int SUBTITLE_COLOR = ARGB.color(210, 190, 220, 255);
 
+    @Unique
+    private static final int LOGO_SIZE = 80;
+
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
-        // Disabled custom banner texture to avoid legacy branding during load screen.
+        textureManager.register(ClientLogoTexture.CLIENT_LOGO, new ClientLogoTexture());
     }
 
     @Inject(method = "extractRenderState", at = @At("RETURN"))
@@ -93,9 +95,23 @@ public abstract class MixinLoadingOverlay {
         int centerY = graphics.guiHeight() / 2;
         var font = Minecraft.getInstance().font;
 
-        graphics.centeredText(font, Component.literal("★"), centerX, centerY - 62, STAR_COLOR);
-        graphics.centeredText(font, Component.literal("SHINE CLIENT"), centerX, centerY - 40, TEXT_COLOR);
-        graphics.centeredText(font, Component.literal("Loading the stars..."), centerX, centerY - 20, SUBTITLE_COLOR);
+        graphics.blit(
+                ClientRenderPipelines.JCEF.SMOOTH_TEXTURE,
+                ClientLogoTexture.CLIENT_LOGO,
+                centerX - LOGO_SIZE / 2,
+                centerY - 96,
+                0.0F,
+                0.0F,
+                LOGO_SIZE,
+                LOGO_SIZE,
+                ClientLogoTexture.WIDTH,
+                ClientLogoTexture.HEIGHT,
+                ClientLogoTexture.WIDTH,
+                ClientLogoTexture.HEIGHT,
+                color
+        );
+        graphics.centeredText(font, Component.literal("SHINE CLIENT"), centerX, centerY - 8, TEXT_COLOR);
+        graphics.centeredText(font, Component.literal("Loading the stars..."), centerX, centerY + 14, SUBTITLE_COLOR);
     }
 
     @ModifyExpressionValue(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;BRAND_BACKGROUND:Ljava/util/function/IntSupplier;", opcode = Opcodes.GETSTATIC))

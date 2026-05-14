@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * LiquidBounce Splash Screen Logo
+ * Shine Client splash screen logo.
  * <p>
  * Should be drawn using [CustomRenderPhase::getTextureBilinear] to make it look smoother.
  */
@@ -44,8 +44,8 @@ import java.util.Objects;
 public final class ClientLogoTexture extends ReloadableTexture {
 
     public static final Identifier CLIENT_LOGO = LiquidBounce.identifier("logo");
-    public static final int WIDTH = 1920;
-    public static final int HEIGHT = 721;
+    public static final int WIDTH = 256;
+    public static final int HEIGHT = 256;
 
     public ClientLogoTexture() {
         super(CLIENT_LOGO);
@@ -53,7 +53,7 @@ public final class ClientLogoTexture extends ReloadableTexture {
 
     @Override
     public TextureContents loadContents(ResourceManager resourceManager) {
-        try (var stream = LiquidBounce.class.getResourceAsStream("/resources/liquidbounce/logo_banner.png")) {
+        try (var stream = LiquidBounce.class.getResourceAsStream("/resources/liquidbounce/particles/star.png")) {
             var nativeImage = NativeImage.read(Objects.requireNonNull(stream));
 
             return new TextureContents(nativeImage, new TextureMetadataSection(true, false, MipmapStrategy.AUTO, TextureMetadataSection.DEFAULT_ALPHA_CUTOFF_BIAS));

@@ -61,7 +61,11 @@ object ModuleHud : ClientModule("HUD", ModuleCategories.RENDER, state = true, hi
 
     private var overlay = CustomOverlay(
         screenType = CustomScreenType.HUD,
-        browserSettings = BrowserSettings(60, ::reopen)
+        browserSettings = BrowserSettings(
+            fpsLimit = 60,
+            update = ::reopen,
+            useAcceleratedPaint = false
+        )
     )
 
     init {

@@ -62,7 +62,7 @@ class CefBrowser(
             height,
             MCEFBrowserSettings(
                 settings.currentFps,
-                GlobalBrowserSettings.accelerated?.get() == true
+                settings.useAcceleratedPaint && GlobalBrowserSettings.accelerated?.get() == true
             )
         ).apply {
             addOnPaintListener {
