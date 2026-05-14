@@ -70,6 +70,16 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
                 return
             }
 
+            if (AmbientWorld.useNightFogProfile()) {
+                fogData.environmentalStart = AmbientWorld.nightFogStart
+                fogData.environmentalEnd = AmbientWorld.nightFogEnd
+                fogData.renderDistanceStart = AmbientWorld.nightFogStart
+                fogData.renderDistanceEnd = AmbientWorld.nightFogEnd
+                fogData.skyEnd = AmbientWorld.nightFogEnd
+                fogData.cloudEnd = AmbientWorld.nightFogEnd
+                return
+            }
+
             fogData.environmentalStart = this.environmental.start
             fogData.environmentalEnd = this.environmental.endInclusive
             fogData.renderDistanceStart = this.renderDistance.start
