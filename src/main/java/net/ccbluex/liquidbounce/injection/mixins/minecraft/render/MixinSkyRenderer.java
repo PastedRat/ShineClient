@@ -38,9 +38,17 @@ public abstract class MixinSkyRenderer {
         at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/SkyRenderState;skyColor:I", opcode = Opcodes.PUTFIELD)
     )
     private void applyCustomSkyColor(SkyRenderState instance, int value, Operation<Void> original) {
-        var customSkyColor = ModuleCustomAmbience.SkyColor.INSTANCE;
-        if (customSkyColor.getRunning()) {
-            value = customSkyColor.getColor().argb();
+        // First check AmbientWorld sky color
+        var ambientWorld = ModuleCustomAmbience.AmbientWorld.INSTANCE;
+        if (ambientWorld.getRunning() && ambientWorld.getSkyColor().getA() > 0) {
+            value = ambientWorld.getSkyColor().argb();
+        }
+        // Then check legacy SkyColor (overrides if both enabled)
+        else {
+            var customSkyColor = ModuleCustomAmbience.SkyColor.INSTANCE;
+            if (customSkyColor.getRunning()) {
+                value = customSkyColor.getColor().argb();
+            }
         }
         original.call(instance, value);
     }

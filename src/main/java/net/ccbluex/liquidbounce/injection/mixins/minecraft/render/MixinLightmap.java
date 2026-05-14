@@ -63,6 +63,14 @@ public abstract class MixinLightmap {
         cancellable = true
     )
     private void injectCustomClearColor(LightmapRenderState renderState, CallbackInfo ci) {
+        // First check AmbientWorld ambient color
+        var ambientWorld = ModuleCustomAmbience.AmbientWorld.INSTANCE;
+        if (ambientWorld.getRunning() && ambientWorld.getAmbientColor().getA() > 0) {
+            var ambientColor = ambientWorld.getAmbientColor();
+            renderState.ambientColor = ambientColor.toRgbVector3f();
+        }
+        
+        // Then check CustomLightbox (overrides if both enabled)
         ModuleCustomAmbience.CustomLightmap customLightmap = ModuleCustomAmbience.CustomLightmap.INSTANCE;
         if (customLightmap.getRunning() && customLightmap.getMode().getActiveMode().edit(this.texture, renderState)) {
             ci.cancel();

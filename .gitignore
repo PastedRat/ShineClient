@@ -1,1 +1,62 @@
-Nothing to output - the change list contains only a source file (.svelte) which should not be ignored.
+```
+# Compiled and build artifacts
+*.class
+*.o
+*.obj
+*.out
+build/
+target/
+
+# Dependencies
+.gradle/
+libs/
+dependencies/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Python specific (if applicable)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.mypy_cache/
+.pytest_cache/
+
+# Java specific
+*.jar
+*.war
+*.ear
+!*.java
+
+# Distribution artifacts
+dist/
+release/
+*.zip
+*.tar.gz
+```

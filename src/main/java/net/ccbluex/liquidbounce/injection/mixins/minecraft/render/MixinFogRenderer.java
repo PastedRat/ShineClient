@@ -35,6 +35,14 @@ public abstract class MixinFogRenderer {
 
     @Inject(method = "computeFogColor", at = @At("HEAD"), cancellable = true)
     private void editFogColor(Camera camera, float partialTicks, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f dest, CallbackInfo ci) {
+        // First check AmbientWorld fog color
+        var ambientWorld = ModuleCustomAmbience.AmbientWorld.INSTANCE;
+        if (ambientWorld.getRunning() && ambientWorld.getFogColor().getA() > 0) {
+            ambientWorld.getFogColor().toVector4f(dest);
+            ci.cancel();
+            return;
+        }
+        // Then check legacy FogColorOverride
         var fogColorOverride = ModuleCustomAmbience.FogValueGroup.FogColorOverride.INSTANCE;
         if (fogColorOverride.getRunning()) {
             fogColorOverride.getColor().toVector4f(dest);
