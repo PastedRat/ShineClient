@@ -92,7 +92,7 @@
   $GRID_SIZE: 10px;
 
   .starfield {
-    position: absolute;
+    position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
@@ -114,7 +114,7 @@
   .tabbed-clickgui {
     background: transparent;
     overflow: hidden;
-    position: absolute;
+    position: relative;
     z-index: 1;
     will-change: opacity;
     transform-origin: top left;
