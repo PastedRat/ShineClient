@@ -68,6 +68,16 @@ object ModuleESP : ClientModule("ESP", ModuleCategories.RENDER) {
 
     internal val maximumDistance by float("MaximumDistance", 128F, 1F..512F)
 
+    private enum class GlowPalette(override val tag: String) : net.ccbluex.liquidbounce.config.types.list.Tagged {
+        ELECTRIC_CYAN("ElectricCyan"),
+        HOT_PINK("HotPink"),
+        CYAN_PINK_WAVE("CyanPinkWave")
+    }
+
+    private val glowPalette = enumChoice("GlowPalette", GlowPalette.CYAN_PINK_WAVE)
+    private val glowBaseAlpha by int("GlowBaseAlpha", 140, 0..255)
+    private val glowPulseStrength by float("GlowPulseStrength", 0.35f, 0f..1f)
+
     override fun onEnabled() {
         RenderedEntities.subscribe(this)
     }
@@ -77,6 +87,26 @@ object ModuleESP : ClientModule("ESP", ModuleCategories.RENDER) {
     }
 
     fun getColor(entity: LivingEntity): Color4b {
+        if (modes.activeMode == EspGlowMode) {
+            val phase = ((System.currentTimeMillis() % 2000L) / 2000.0 * (Math.PI * 2.0)).toFloat()
+            val pulse = (kotlin.math.sin(phase) * 0.5f + 0.5f)
+            val alpha = (glowBaseAlpha + (255 - glowBaseAlpha) * (pulse * glowPulseStrength)).toInt().coerceIn(0, 255)
+
+            return when (glowPalette.get()) {
+                GlowPalette.ELECTRIC_CYAN -> Color4b(0, 255, 255, alpha)
+                GlowPalette.HOT_PINK -> Color4b(255, 30, 180, alpha)
+                GlowPalette.CYAN_PINK_WAVE -> {
+                    val t = pulse
+                    Color4b(
+                        r = (255f * t).toInt().coerceIn(0, 255),
+                        g = (255f - 120f * t).toInt().coerceIn(0, 255),
+                        b = 255,
+                        a = alpha
+                    )
+                }
+            }
+        }
+
         if (entity.hurtTime > 0) {
             return Color4b.RED
         }

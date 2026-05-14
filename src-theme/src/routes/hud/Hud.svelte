@@ -105,9 +105,19 @@
     {/each}
 </div>
 
+
 <style lang="scss">
+  :global(html),
+  :global(body),
+  :global(#app),
+  :global(main) {
+    background: transparent !important;
+  }
+
   .hud {
     height: 100vh;
     width: 100vw;
+    background: transparent !important;
   }
 </style>
+

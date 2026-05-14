@@ -50,6 +50,10 @@ object ModuleHitFX : ClientModule("HitFX", ModuleCategories.RENDER) {
     private val particles by multiEnumChoice("Particle", Particle.FIRE)
     private val particleAmount by intRange("ParticleAmount", 1..1, 1..20)
 
+    private val megaBurst by boolean("MegaBurst", true)
+    private val burstRepeats by int("BurstRepeats", 3, 1..12)
+    private val ringRadius by float("RingRadius", 1.2f, 0.1f..4f)
+
     private val otherSoundSet by multiEnumChoice("OtherSound", HitFXRegistry.POP)
 
     private val otherSound
@@ -139,8 +143,11 @@ object ModuleHitFX : ClientModule("HitFX", ModuleCategories.RENDER) {
 
     private fun playEffect(target: LivingEntity) = mc.execute {
         val particles = particles.ifEmpty { return@execute }
-        repeat(particleAmount.random()) {
-            when (particles.random()) {
+        val repeats = if (megaBurst) burstRepeats else 1
+
+        repeat(repeats) { burstIndex ->
+            repeat(particleAmount.random()) {
+                when (particles.random()) {
                 Particle.BLOOD -> world.addDestroyBlockEffect(
                     target.blockPosition().above(1),
                     Blocks.REDSTONE_BLOCK.defaultBlockState()
@@ -152,6 +159,18 @@ object ModuleHitFX : ClientModule("HitFX", ModuleCategories.RENDER) {
                 Particle.SMOKE -> mc.particleEngine.createTrackingEmitter(target, ParticleTypes.SMOKE)
                 Particle.MAGIC -> mc.particleEngine.createTrackingEmitter(target, ParticleTypes.ENCHANTED_HIT)
                 Particle.CRITS -> mc.particleEngine.createTrackingEmitter(target, ParticleTypes.CRIT)
+                }
+            }
+
+            if (megaBurst) {
+                val ringCount = 12
+                repeat(ringCount) { i ->
+                    val angle = (Math.PI * 2.0 * i / ringCount) + (burstIndex * 0.15)
+                    val x = target.x + kotlin.math.cos(angle).toFloat() * ringRadius
+                    val y = target.y + 1.0 + (burstIndex * 0.05)
+                    val z = target.z + kotlin.math.sin(angle).toFloat() * ringRadius
+                    world.addParticle(ParticleTypes.END_ROD, x, y, z, 0.0, 0.02, 0.0)
+                }
             }
         }
     }

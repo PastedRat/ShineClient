@@ -59,14 +59,23 @@ object ModuleHud : ClientModule("HUD", ModuleCategories.RENDER, state = true, hi
     private val isVisible: Boolean
         get() = !isHidingNow && inGame
 
-    private var overlay = CustomOverlay(
+    private val shaderEffects by boolean("ShaderEffects", true)
+    private val shaderPreset by int("ShaderPreset", 1, 0..2)
+
+    private fun createOverlay() = CustomOverlay(
         screenType = CustomScreenType.HUD,
         browserSettings = BrowserSettings(
-            fpsLimit = 60,
+            fpsLimit = when (shaderPreset) {
+                0 -> 45
+                2 -> 120
+                else -> 60
+            },
             update = ::reopen,
-            useAcceleratedPaint = false
+            useAcceleratedPaint = shaderEffects
         )
     )
+
+    private var overlay = createOverlay()
 
     init {
         tree(Blur)
@@ -147,6 +156,7 @@ object ModuleHud : ClientModule("HUD", ModuleCategories.RENDER, state = true, hi
 
     fun reopen() {
         overlay.close()
+        overlay = createOverlay()
         if (enabled && isVisible) {
             overlay.open()
         }
