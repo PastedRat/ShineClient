@@ -1,17 +1,17 @@
 :root {
     /* Foundation */
-    --surface-color: #020817;
+    --surface-color: #0f0b1f;
     --text-color: #ffffff;
-    --text-dimmed-color: #d3d3d3;
+    --text-dimmed-color: #c7bddf;
 
-    --accent-color: #6be3ef;
+    --accent-color: #a78bfa;
     --accent-hover-color: color-mix(in srgb, var(--accent-color) 82%, black);
     --accent-subtle-background-color: color-mix(in srgb, var(--accent-color) 12%, transparent);
 
-    --success-color: #4dac68;
-    --error-color: #fc4130;
+    --success-color: #35d0a0;
+    --error-color: #ff5f8a;
     --premium-color: #67d24a;
-    --warning-color: #efbf04;
+    --warning-color: #ffc857;
     --grid-color: color-mix(in srgb, #808080 25%, transparent);
 
     /* ClickGUI */
@@ -33,7 +33,7 @@
     --clickgui-description-shadow-color: var(--clickgui-base-50-color);
     --clickgui-description-arrow-color: var(--clickgui-description-background-color);
 
-    --clickgui-overlay-background-color: color-mix(in srgb, black 60%, transparent);
+    --clickgui-overlay-background-color: color-mix(in srgb, #120c24 72%, transparent);
     --clickgui-panel-shadow-color: var(--clickgui-base-50-color);
     --clickgui-panel-header-background-color: var(--clickgui-base-90-color);
     --clickgui-panel-header-border-color: var(--accent-color);
@@ -148,7 +148,7 @@
     --menu-button-hover-background-color: var(--accent-hover-color);
     --menu-button-secondary-background-color: var(--menu-base-36-color);
     --menu-button-secondary-hover-background-color: var(--menu-base-color);
-    --menu-modal-backdrop-color: color-mix(in srgb, black 60%, transparent);
+    --menu-modal-backdrop-color: color-mix(in srgb, #120c24 72%, transparent);
     --menu-modal-background-color: var(--menu-base-80-color);
     --menu-modal-shadow-color: var(--menu-base-50-color);
     --menu-modal-title-accent-color: var(--accent-color);
