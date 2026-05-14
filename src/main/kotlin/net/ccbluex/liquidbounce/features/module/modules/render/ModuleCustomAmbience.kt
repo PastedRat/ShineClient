@@ -141,6 +141,8 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
         val color by color("Color", Color4b.BLUE)
     }
 
+        val cloudTint by color("CloudTint", Color4b.WHITE)
+        fun resolveCloudTint(): Color4b = scaled(cloudTint)
     init {
         tree(Precipitation)
         tree(FogValueGroup)
