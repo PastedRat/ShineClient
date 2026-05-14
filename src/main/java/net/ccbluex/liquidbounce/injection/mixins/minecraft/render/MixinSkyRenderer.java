@@ -36,7 +36,8 @@ public abstract class MixinSkyRenderer {
 
     @WrapOperation(
         method = "extractRenderState",
-        at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/SkyRenderState;cloudColor:I", opcode = Opcodes.PUTFIELD)
+        at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/SkyRenderState;cloudColor:I", opcode = Opcodes.PUTFIELD),
+        require = 0
     )
     private void applyCustomCloudColor(SkyRenderState instance, int value, Operation<Void> original) {
         var ambientWorld = ModuleCustomAmbience.AmbientWorld.INSTANCE;
