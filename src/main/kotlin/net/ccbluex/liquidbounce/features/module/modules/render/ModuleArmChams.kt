@@ -18,7 +18,8 @@ object ModuleArmChams : ClientModule("ArmChams", ModuleCategories.RENDER) {
 
     fun isFullBright() = fullBright
 
-    fun shouldAffectHeldItems() = affectHeldItems
+    @JvmStatic
+    fun isAffectHeldItemsEnabled() = affectHeldItems
 
     fun getActiveColor(): Color4b {
         val c = if (gradient) {

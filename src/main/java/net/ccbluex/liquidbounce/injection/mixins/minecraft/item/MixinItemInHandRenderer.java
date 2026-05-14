@@ -75,7 +75,7 @@ public abstract class MixinItemInHandRenderer {
         ItemDisplayContext type
     ) {
         int appliedLight = lightCoords;
-        if (type.firstPerson() && ModuleArmChams.INSTANCE.shouldApply() && ModuleArmChams.INSTANCE.shouldAffectHeldItems()) {
+        if (type.firstPerson() && ModuleArmChams.INSTANCE.shouldApply() && ModuleArmChams.isAffectHeldItemsEnabled()) {
             appliedLight = ModuleArmChams.INSTANCE.isFullBright() ? 0x00F000F0 : lightCoords;
         }
         final int finalAppliedLight = appliedLight;
