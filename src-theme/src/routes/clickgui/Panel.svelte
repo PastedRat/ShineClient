@@ -47,6 +47,10 @@
     }
 
     function loadPanelConfig(): PanelConfig {
+        const defaultPanelWidth = 250;
+        const defaultScreenWidth = (typeof window !== "undefined" ? window.innerWidth : 1920) * (2 / $scaleFactor);
+        const defaultRightColumn = Math.max(20, defaultScreenWidth - defaultPanelWidth - 24);
+
         const localStorageItem = localStorage.getItem(
             `clickgui.panel.${category}`,
         );
@@ -54,7 +58,7 @@
         if (!localStorageItem) {
             return {
                 top: panelIndex * 50 + 20,
-                left: 20,
+                left: Math.max(20, defaultRightColumn - panelIndex * 36),
                 expanded: false,
                 scrollTop: 0,
                 zIndex: 0
