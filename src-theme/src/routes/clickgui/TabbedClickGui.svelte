@@ -95,6 +95,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    z-index: 0;
 
     .star {
       position: absolute;
@@ -111,11 +112,10 @@
   }
 
   .tabbed-clickgui {
-    background: radial-gradient(circle at 14% 30%, rgba(95, 224, 255, 0.26), transparent 35%),
-      radial-gradient(circle at 86% 62%, rgba(245, 228, 104, 0.2), transparent 35%),
-      var(--clickgui-overlay-background-color);
+    background: transparent;
     overflow: hidden;
     position: absolute;
+    z-index: 1;
     will-change: opacity;
     transform-origin: top left;
     left: 0;
@@ -124,6 +124,7 @@
     &.grid {
       background-image: linear-gradient(to right, var(--clickgui-grid-color) 1px, transparent 1px),
       linear-gradient(to bottom, var(--clickgui-grid-color) 1px, transparent 1px);
+      background-color: transparent;
     }
   }
 </style>

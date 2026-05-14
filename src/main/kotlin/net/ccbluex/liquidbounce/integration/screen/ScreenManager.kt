@@ -157,6 +157,8 @@ object ScreenManager : EventListener {
             return
         }
 
+        mainBrowser?.visible = true
+
         // Check if the virtual screen is already open
         if (screen?.type == type) {
             return
@@ -178,7 +180,11 @@ object ScreenManager : EventListener {
     }
 
     fun closeScreen() {
-        val virtualScreen = screen ?: return
+        val virtualScreen = screen
+        if (virtualScreen == null) {
+            mainBrowser?.visible = false
+            return
+        }
 
         screen = null
         screenAcknowledgement.reset()
@@ -188,6 +194,7 @@ object ScreenManager : EventListener {
                 action = VirtualScreenEvent.Action.CLOSE
             )
         )
+        mainBrowser?.visible = false
     }
 
     fun restart() {
@@ -196,7 +203,9 @@ object ScreenManager : EventListener {
             // That means we are likely still in the process of starting up.
             val mainBrowser = this.mainBrowser ?: return
             mainBrowser.close()
-            this.mainBrowser = ThemeManager.openInputAwareImmediate(settings = browserSettings)
+            this.mainBrowser = ThemeManager.openInputAwareImmediate(settings = browserSettings).apply {
+                visible = screen != null
+            }
         } catch (e: Exception) {
             logger.error("Failed to restart browser backend for screen integration.", e)
         }
