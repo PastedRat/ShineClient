@@ -59,13 +59,6 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
         private val layerSize by float("LayerSize", 1.91f, 1f..5f).markDirtyOnChanged()
         private val falloff by float("Falloff", 6.83f, 0f..20f).markDirtyOnChanged()
 
-        object HandsChams : ToggleableValueGroup(this, "HandsChams", true) {
-            val useHandsChams by boolean("Enabled", true).markDirtyOnChanged()
-            val color by color("Color", Color4b(0, 64, 255, 186)).markDirtyOnChanged()
-            val rgb by boolean("Rgb", false).markDirtyOnChanged()
-            val rgbSpeed by float("RgbSpeed", 1.5f, 0.2f..6f).markDirtyOnChanged()
-        }
-
         private var edited = false
 
         private var storedLightmapTexture: GpuTexture? = null
@@ -78,19 +71,8 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
         private val sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR, false)
 
         private fun getActiveBlendColor(): Color4b {
-            if (!HandsChams.useHandsChams) return blendColor
-            if (!HandsChams.rgb) return HandsChams.color
-
-            val t = (System.currentTimeMillis() / 1000.0) * HandsChams.rgbSpeed
-            val r = ((kotlin.math.sin(t) * 0.5 + 0.5) * 255.0).toInt().coerceIn(0, 255)
-            val g = ((kotlin.math.sin(t + 2.09439510239) * 0.5 + 0.5) * 255.0).toInt().coerceIn(0, 255)
-            val b = ((kotlin.math.sin(t + 4.18879020479) * 0.5 + 0.5) * 255.0).toInt().coerceIn(0, 255)
-            return Color4b(r, g, b, HandsChams.color.a)
+            return blendColor
         }
-
-        fun shouldTintHands() = this.running && HandsChams.useHandsChams
-
-        fun getHandsTintColor(): Color4b = getActiveBlendColor()
 
         fun applyToTexture(textureView: GpuTextureView) {
             if (!this.running || edited) return
@@ -102,10 +84,6 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
                 )
             } else {
                 this.storedLightmapTexture!!.copyFrom(source = textureView.texture())
-            }
-
-            if (HandsChams.rgb) {
-                uboDirty = true
             }
 
             if (uboDirty) {
@@ -181,7 +159,6 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
 
     init {
         tree(Lightmap)
-        Lightmap.tree(Lightmap.HandsChams)
         tree(Shield)
     }
 

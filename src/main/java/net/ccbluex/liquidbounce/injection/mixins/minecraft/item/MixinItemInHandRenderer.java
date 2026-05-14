@@ -25,8 +25,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.ccbluex.liquidbounce.features.module.modules.combat.ModuleSwordBlock;
+import net.ccbluex.liquidbounce.features.module.modules.render.ModuleArmChams;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAnimations;
-import net.ccbluex.liquidbounce.features.module.modules.render.ModuleItemChams;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleSilentHotbar;
 import net.ccbluex.liquidbounce.utils.client.SilentHotbar;
 import net.ccbluex.liquidbounce.utils.item.ItemCategorizationsKt;
@@ -167,14 +167,13 @@ public abstract class MixinItemInHandRenderer {
         net.minecraft.world.entity.HumanoidArm arm,
         Operation<Void> original
     ) {
-        var handChams = ModuleItemChams.Lightmap.INSTANCE;
-        if (!handChams.shouldTintHands()) {
+        if (!ModuleArmChams.INSTANCE.shouldApply()) {
             original.call(instance, poseStack, submitNodeCollector, light, equipProgress, swingProgress, arm);
             return;
         }
 
-        int fullBright = 0x00F000F0;
-        original.call(instance, poseStack, submitNodeCollector, fullBright, equipProgress, swingProgress, arm);
+        int targetLight = ModuleArmChams.INSTANCE.isFullBright() ? 0x00F000F0 : light;
+        original.call(instance, poseStack, submitNodeCollector, targetLight, equipProgress, swingProgress, arm);
     }
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"))
