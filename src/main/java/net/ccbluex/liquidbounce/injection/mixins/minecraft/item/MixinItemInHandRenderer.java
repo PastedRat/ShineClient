@@ -26,6 +26,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.ccbluex.liquidbounce.features.module.modules.combat.ModuleSwordBlock;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAnimations;
+import net.ccbluex.liquidbounce.features.module.modules.render.ModuleItemChams;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleSilentHotbar;
 import net.ccbluex.liquidbounce.utils.client.SilentHotbar;
 import net.ccbluex.liquidbounce.utils.item.ItemCategorizationsKt;
@@ -153,6 +154,27 @@ public abstract class MixinItemInHandRenderer {
         }
 
         return equipProgress;
+    }
+
+    @WrapOperation(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderPlayerArm(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;IFFLnet/minecraft/world/entity/HumanoidArm;)V"))
+    private void hookHandsChamsColor(
+        ItemInHandRenderer instance,
+        PoseStack poseStack,
+        SubmitNodeCollector submitNodeCollector,
+        int light,
+        float equipProgress,
+        float swingProgress,
+        net.minecraft.world.entity.HumanoidArm arm,
+        Operation<Void> original
+    ) {
+        var handChams = ModuleItemChams.Lightmap.INSTANCE;
+        if (!handChams.shouldTintHands()) {
+            original.call(instance, poseStack, submitNodeCollector, light, equipProgress, swingProgress, arm);
+            return;
+        }
+
+        int fullBright = 0x00F000F0;
+        original.call(instance, poseStack, submitNodeCollector, fullBright, equipProgress, swingProgress, arm);
     }
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"))

@@ -88,6 +88,10 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
             return Color4b(r, g, b, HandsChams.color.a)
         }
 
+        fun shouldTintHands() = this.running && HandsChams.useHandsChams
+
+        fun getHandsTintColor(): Color4b = getActiveBlendColor()
+
         fun applyToTexture(textureView: GpuTextureView) {
             if (!this.running || edited) return
 
