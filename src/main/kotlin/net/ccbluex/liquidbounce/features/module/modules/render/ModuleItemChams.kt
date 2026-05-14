@@ -63,7 +63,7 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
 
         private var storedLightmapTexture: GpuTexture? = null
 
-        private val UBO = ClientUniformDefine.HAND_ITEM_LIGHTMAP.createSingleBuffer()
+        private val UBO by lazy { ClientUniformDefine.HAND_ITEM_LIGHTMAP.createSingleBuffer() }
 
         private var uboDirty = true
         private fun <T : Any> Value<T>.markDirtyOnChanged() = onChanged { uboDirty = true }
