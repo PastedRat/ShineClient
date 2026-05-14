@@ -51,16 +51,13 @@ import java.util.function.IntSupplier;
 public abstract class MixinLoadingOverlay {
 
     @Unique
-    private static final IntSupplier CLIENT_ARGB = () -> ARGB.color(255, 4, 8, 18);
-
-    @Unique
     private static final int TEXT_COLOR = ARGB.color(255, 245, 251, 255);
 
     @Unique
     private static final int SUBTITLE_COLOR = ARGB.color(210, 190, 220, 255);
 
     @Unique
-    private static final int LOGO_WIDTH = 220;
+    private static final int LOGO_WIDTH = 180;
 
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
@@ -74,7 +71,7 @@ public abstract class MixinLoadingOverlay {
 
     @WrapWithCondition(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIIIIII)V"))
     private boolean drawMojangLogo(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier sprite, int x, int y, float u, float v, int width, int height, int regionWidth, int regionHeight, int textureWidth, int textureHeight, int color) {
-        return false;
+        return !sprite.getPath().contains("mojangstudios");
     }
 
     @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/ReloadInstance;getActualProgress()F"))
@@ -113,12 +110,12 @@ public abstract class MixinLoadingOverlay {
                 color
         );
         graphics.centeredText(font, Component.literal("SHINE CLIENT"), centerX, centerY - 8, TEXT_COLOR);
-        graphics.centeredText(font, Component.literal("Loading the stars..."), centerX, centerY + 14, SUBTITLE_COLOR);
+        graphics.centeredText(font, Component.literal("Loading the stars and preparing your client..."), centerX, centerY + 14, SUBTITLE_COLOR);
     }
 
     @ModifyExpressionValue(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;BRAND_BACKGROUND:Ljava/util/function/IntSupplier;", opcode = Opcodes.GETSTATIC))
     private IntSupplier withClientColor(IntSupplier original) {
-        return HideAppearance.INSTANCE.isHidingNow() ? original : CLIENT_ARGB;
+        return original;
     }
 
 }
