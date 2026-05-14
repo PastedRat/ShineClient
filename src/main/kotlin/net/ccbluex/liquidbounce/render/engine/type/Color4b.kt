@@ -160,6 +160,9 @@ data class Color4b(val argb: Int) {
 
     fun alpha(alpha: Int) = with(a = alpha)
 
+    // Backward-compatible alias used by some modules/branches
+    fun withAlpha(alpha: Int) = with(a = alpha)
+
     @Deprecated(
         message = "Replaced with Color4b.argb",
         replaceWith = ReplaceWith("this.argb"),

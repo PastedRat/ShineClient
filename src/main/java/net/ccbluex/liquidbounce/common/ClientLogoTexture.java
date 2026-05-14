@@ -56,7 +56,7 @@ public final class ClientLogoTexture extends ReloadableTexture {
         try (var stream = LiquidBounce.class.getResourceAsStream("/resources/liquidbounce/particles/star.png")) {
             var nativeImage = NativeImage.read(Objects.requireNonNull(stream));
 
-            return new TextureContents(nativeImage, new TextureMetadataSection(true, false, MipmapStrategy.AUTO, TextureMetadataSection.DEFAULT_ALPHA_CUTOFF_BIAS));
+            return new TextureContents(nativeImage, new TextureMetadataSection(false, false, MipmapStrategy.AUTO, TextureMetadataSection.DEFAULT_ALPHA_CUTOFF_BIAS));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
