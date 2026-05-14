@@ -48,6 +48,9 @@ import java.util.function.IntSupplier;
 public abstract class MixinLoadingOverlay {
 
     @Unique
+    private static final IntSupplier CLIENT_ARGB = () -> ARGB.color(255, 4, 8, 18);
+
+    @Unique
     private static final int TEXT_COLOR = ARGB.color(255, 245, 251, 255);
 
     @Unique
@@ -107,7 +110,7 @@ public abstract class MixinLoadingOverlay {
 
     @ModifyExpressionValue(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;BRAND_BACKGROUND:Ljava/util/function/IntSupplier;", opcode = Opcodes.GETSTATIC))
     private IntSupplier withClientColor(IntSupplier original) {
-        return original;
+        return HideAppearance.INSTANCE.isHidingNow() ? original : CLIENT_ARGB;
     }
 
 }
