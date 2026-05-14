@@ -141,11 +141,55 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
         val color by color("Color", Color4b.BLUE)
     }
 
+    /**
+     * Ambient World Color - Changes the overall world atmosphere
+     */
+    object AmbientWorld : ToggleableValueGroup(this, "AmbientWorld", false) {
+        val ambientColor by color("AmbientColor", Color4b.WHITE)
+        val skyColor by color("SkyColor", Color4b(136, 189, 255))
+        val cloudColor by color("CloudColor", Color4b.WHITE)
+        val fogColor by color("FogColor", Color4b(47, 128, 255, 201))
+        val intensity by float("Intensity", 1.0f, 0.0f..2.0f)
+        
+        fun getAmbientColor(): Color4b {
+            return if (ambientColor.a > 0) {
+                ambientColor.withAlpha((ambientColor.a * intensity).toInt().coerceIn(0, 255))
+            } else {
+                ambientColor
+            }
+        }
+        
+        fun getSkyColor(): Color4b {
+            return if (skyColor.a > 0) {
+                skyColor.withAlpha((skyColor.a * intensity).toInt().coerceIn(0, 255))
+            } else {
+                skyColor
+            }
+        }
+        
+        fun getCloudColor(): Color4b {
+            return if (cloudColor.a > 0) {
+                cloudColor.withAlpha((cloudColor.a * intensity).toInt().coerceIn(0, 255))
+            } else {
+                cloudColor
+            }
+        }
+        
+        fun getFogColor(): Color4b {
+            return if (fogColor.a > 0) {
+                fogColor.withAlpha((fogColor.a * intensity).toInt().coerceIn(0, 255))
+            } else {
+                fogColor
+            }
+        }
+    }
+
     init {
         tree(Precipitation)
         tree(FogValueGroup)
         tree(CustomLightmap)
         tree(SkyColor)
+        tree(AmbientWorld)
     }
 
     @JvmStatic
