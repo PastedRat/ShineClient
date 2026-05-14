@@ -20,9 +20,7 @@
 package net.ccbluex.liquidbounce.injection.mixins.minecraft.gui;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.ccbluex.liquidbounce.common.ClientLogoTexture;
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.events.ScreenRenderEvent;
@@ -33,7 +31,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -60,7 +57,7 @@ public abstract class MixinLoadingOverlay {
     private static final int SUBTITLE_COLOR = ARGB.color(210, 190, 220, 255);
 
     @Unique
-    private static final int LOGO_WIDTH = 220;
+    private static final int LOGO_WIDTH = 96;
 
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
@@ -70,11 +67,6 @@ public abstract class MixinLoadingOverlay {
     @Inject(method = "extractRenderState", at = @At("RETURN"))
     private void render(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         EventManager.INSTANCE.callEvent(new ScreenRenderEvent(context, delta));
-    }
-
-    @WrapWithCondition(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIIIIII)V"))
-    private boolean drawMojangLogo(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier sprite, int x, int y, float u, float v, int width, int height, int regionWidth, int regionHeight, int textureWidth, int textureHeight, int color) {
-        return false;
     }
 
     @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/ReloadInstance;getActualProgress()F"))
@@ -113,7 +105,7 @@ public abstract class MixinLoadingOverlay {
                 color
         );
         graphics.centeredText(font, Component.literal("SHINE CLIENT"), centerX, centerY - 8, TEXT_COLOR);
-        graphics.centeredText(font, Component.literal("Loading the stars..."), centerX, centerY + 14, SUBTITLE_COLOR);
+        graphics.centeredText(font, Component.literal("Loading the stars and preparing your client..."), centerX, centerY + 14, SUBTITLE_COLOR);
     }
 
     @ModifyExpressionValue(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/LoadingOverlay;BRAND_BACKGROUND:Ljava/util/function/IntSupplier;", opcode = Opcodes.GETSTATIC))
