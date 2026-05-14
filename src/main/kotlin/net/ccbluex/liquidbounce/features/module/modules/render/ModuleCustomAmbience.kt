@@ -55,7 +55,7 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
             val color by color("Color", Color4b(47, 128, 255, 201))
         }
 
-        private val backgroundColor by color("BackgroundColor", Color4b(47, 128, 255, 201))
+        private val backgroundColor by color("BackgroundColor", Color4b(47, 128, 255, 0))
 
         private val environmental by floatRange("Environmental", 0f..1024f, -16f..2048f)
         private val renderDistance by floatRange("RenderDistance", 230f..256f, 0f..1024f)
@@ -67,6 +67,16 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
          */
         fun modifyFogData(fogData: FogData) {
             if (!this.running) {
+                return
+            }
+
+            if (AmbientWorld.useNightFogProfile()) {
+                fogData.environmentalStart = AmbientWorld.nightFogStart
+                fogData.environmentalEnd = AmbientWorld.nightFogEnd
+                fogData.renderDistanceStart = AmbientWorld.nightFogStart
+                fogData.renderDistanceEnd = AmbientWorld.nightFogEnd
+                fogData.skyEnd = AmbientWorld.nightFogEnd
+                fogData.cloudEnd = AmbientWorld.nightFogEnd
                 return
             }
 
@@ -141,11 +151,71 @@ object ModuleCustomAmbience : ClientModule("CustomAmbience", ModuleCategories.RE
         val color by color("Color", Color4b.BLUE)
     }
 
+
+    /**
+     * Ambient World Color - Changes overall world atmosphere.
+     */
+    object AmbientWorld : ToggleableValueGroup(this, "AmbientWorld", false) {
+        val ambientTint by color("AmbientTint", Color4b.WHITE)
+        val skyTint by color("SkyTint", Color4b(136, 189, 255))
+        val fogTint by color("FogTint", Color4b(47, 128, 255, 201))
+        val cloudTint by color("CloudTint", Color4b.WHITE)
+        val intensity by float("Intensity", 1.0f, 0.0f..3.0f)
+        val enableNightMode by boolean("EnableNightMode", false)
+        val nightFogStart by float("NightFogStart", 0.0f, 0.0f..128f)
+        val nightFogEnd by float("NightFogEnd", 25.0f, 1.0f..256f)
+        val skyImagePath by text("SkyImagePath", "")
+
+        enum class ShaderPreset(override val tag: String) : net.ccbluex.liquidbounce.config.types.list.Tagged {
+            OFF("Off"),
+            CYBERPUNK("Cyberpunk"),
+            VAPORWAVE("Vaporwave"),
+            NOIR("Noir")
+        }
+
+        val shaderPreset = enumChoice("ShaderPreset", ShaderPreset.OFF)
+        val shaderStrength by float("ShaderStrength", 0.65f, 0f..1f)
+
+        private fun scaled(color: Color4b): Color4b {
+            val factor = intensity.coerceAtLeast(0f)
+            return color.with(
+                r = (color.r * factor).toInt().coerceIn(0, 255),
+                g = (color.g * factor).toInt().coerceIn(0, 255),
+                b = (color.b * factor).toInt().coerceIn(0, 255),
+                a = (color.a * factor).toInt().coerceIn(0, 255)
+            )
+        }
+
+        fun resolveAmbientTint(): Color4b = scaled(ambientTint)
+        fun resolveSkyTint(): Color4b = scaled(skyTint)
+        fun resolveFogTint(): Color4b {
+            val base = scaled(fogTint)
+            val presetColor = when (shaderPreset.get()) {
+                ShaderPreset.OFF -> return base
+                ShaderPreset.CYBERPUNK -> Color4b(6, 8, 22, 240)
+                ShaderPreset.VAPORWAVE -> Color4b(32, 14, 48, 230)
+                ShaderPreset.NOIR -> Color4b(10, 10, 10, 245)
+            }
+
+            val strength = shaderStrength.coerceIn(0f, 1f).toDouble()
+            return base.interpolateTo(presetColor, strength)
+        }
+        fun resolveCloudTint(): Color4b = scaled(cloudTint)
+
+
+        fun resolveNightFogColor(): Color4b = Color4b(3, 3, 8, 255)
+
+        fun useNightFogProfile(): Boolean = running && enableNightMode
+
+        fun hasCustomSkyImage(): Boolean = skyImagePath.isNotBlank()
+    }
+
     init {
         tree(Precipitation)
         tree(FogValueGroup)
         tree(CustomLightmap)
         tree(SkyColor)
+        tree(AmbientWorld)
     }
 
     @JvmStatic

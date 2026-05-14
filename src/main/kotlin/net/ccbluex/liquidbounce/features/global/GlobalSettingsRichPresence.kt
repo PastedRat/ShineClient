@@ -56,7 +56,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
     aliases = listOf("DiscordPresence")
 ) {
 
-    private const val IPC_APP_ID = 443472046031110144L
+    private const val IPC_APP_ID = 443472046031110144L // Replace with Shine Client Discord app id to change "Playing ..." app name
 
     private val separatorText by text("Separator", " - ")
 
@@ -191,7 +191,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
             }
 
             setDetails(buildText(detailsParts))
-            setState("in Shine Client")
+            setState("Shine Client")
 
             if (buttons.size() > 0) {
                 setButtons(buttons)
@@ -254,7 +254,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
         override val tag: String,
         val assetValue: String?,
     ) : Tagged {
-        STAR("Star", "shine_client"),
+        STAR("Star", "star_64"),
         LOGO("Logo", "shine_client"),
     }
 
