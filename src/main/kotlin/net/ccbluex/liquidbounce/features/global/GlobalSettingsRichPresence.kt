@@ -30,7 +30,6 @@ import net.ccbluex.liquidbounce.LiquidBounce.clientBranch
 import net.ccbluex.liquidbounce.LiquidBounce.clientCommit
 import net.ccbluex.liquidbounce.LiquidBounce.clientVersion
 import net.ccbluex.liquidbounce.config.gson.util.jsonArrayOf
-import net.ccbluex.liquidbounce.config.gson.util.jsonObject
 import net.ccbluex.liquidbounce.config.types.group.ToggleableValueGroup
 import net.ccbluex.liquidbounce.config.types.list.Tagged
 import net.ccbluex.liquidbounce.event.events.ClientShutdownEvent
@@ -59,9 +58,6 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
 
     private const val IPC_APP_ID = 443472046031110144L
 
-    private val activityType by enumChoice("ActivityType", PresenceActivityType.PLAYING)
-    private val statusDisplayType by enumChoice("StatusDisplayType", PresenceStatusDisplayType.NAME)
-
     private val separatorText by text("Separator", " - ")
 
     private val detailsParts by multiEnumChoice(
@@ -69,21 +65,16 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
         RichPresencePart.CLIENT_NAME,
         RichPresencePart.CLIENT_VERSION
     )
-    private val stateParts by multiEnumChoice(
-        "StateParts",
-        RichPresencePart.MODULES_SUMMARY,
-        RichPresencePart.CLIENT_COMMIT,
-    )
 
     private object LargeImageConfig : ToggleableValueGroup(
         parent = this,
         name = "LargeImage",
-        enabled = false,
+        enabled = true,
     ) {
-        val asset by enumChoice("Asset", PresenceAsset.LOGO)
+        val asset by enumChoice("Asset", PresenceAsset.STAR)
         val parts by multiEnumChoice(
             "Parts",
-            RichPresencePart.PROTOCOL_VERSION,
+            RichPresencePart.CLIENT_NAME,
         )
     }
 
@@ -92,7 +83,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
         name = "SmallImage",
         enabled = false,
     ) {
-        val asset by enumChoice("Asset", PresenceAsset.LOGO)
+        val asset by enumChoice("Asset", PresenceAsset.STAR)
         val parts by multiEnumChoice(
             "Parts",
             RichPresencePart.CLIENT_BRANCH,
@@ -103,16 +94,7 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
     private val largeImage = tree(LargeImageConfig)
     private val smallImage = tree(SmallImageConfig)
 
-    private val buttons = jsonArrayOf(
-        jsonObject {
-            "label"("Website")
-            "url"("https://shineclient.net")
-        },
-        jsonObject {
-            "label"("LiquidProxy")
-            "url"("https://liquidproxy.net")
-        },
-    )
+    private val buttons = jsonArrayOf()
 
     // IPC Client
     private var ipcClient: IPCClient? = null
@@ -193,8 +175,8 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
         }
 
         ipcClient.sendRichPresence {
-            setActivityType(activityType.activityType)
-            setStatusDisplayType(statusDisplayType.statusDisplayType)
+            setActivityType(ActivityType.Playing)
+            setStatusDisplayType(StatusDisplayType.Details)
             setStartTimestamp(timestamp)
 
             if (largeImage.enabled) {
@@ -209,9 +191,11 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
             }
 
             setDetails(buildText(detailsParts))
-            setState(buildText(stateParts))
+            setState("in Shine Client")
 
-            setButtons(buttons)
+            if (buttons.size() > 0) {
+                setButtons(buttons)
+            }
         }
     }
 
@@ -266,31 +250,11 @@ object GlobalSettingsRichPresence : ToggleableValueGroup(
 
     }
 
-    @Suppress("unused")
-    private enum class PresenceActivityType(
-        override val tag: String,
-        val activityType: ActivityType,
-    ) : Tagged {
-        PLAYING("Playing", ActivityType.Playing),
-        LISTENING("Listening", ActivityType.Listening),
-        WATCHING("Watching", ActivityType.Watching),
-        COMPETING("Competing", ActivityType.Competing),
-    }
-
-    @Suppress("unused")
-    private enum class PresenceStatusDisplayType(
-        override val tag: String,
-        val statusDisplayType: StatusDisplayType,
-    ) : Tagged {
-        NAME("Name", StatusDisplayType.Name),
-        STATE("State", StatusDisplayType.State),
-        DETAILS("Details", StatusDisplayType.Details),
-    }
-
     private enum class PresenceAsset(
         override val tag: String,
         val assetValue: String?,
     ) : Tagged {
+        STAR("Star", "shine_client"),
         LOGO("Logo", "shine_client"),
     }
 

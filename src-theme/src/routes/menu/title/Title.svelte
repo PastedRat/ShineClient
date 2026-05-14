@@ -2,12 +2,9 @@
     import MainButton from "./buttons/MainButton.svelte";
     import ChildButton from "./buttons/ChildButton.svelte";
     import ConfettiBackground from "./ConfettiBackground.svelte";
-    import FallingStarsBackground from "./FallingStarsBackground.svelte";
     import ButtonContainer from "../common/buttons/ButtonContainer.svelte";
     import IconTextButton from "../common/buttons/IconTextButton.svelte";
-    import IconButton from "../common/buttons/IconButton.svelte";
     import {
-        browse,
         exitClient,
         getClientUpdate,
         openScreen,
@@ -18,6 +15,15 @@
     import {onMount} from "svelte";
     import {notification} from "../common/header/notification_store";
     import {isAnniversary} from "../../../util/utils";
+
+    const titleStars = Array.from({length: 36}, (_, index) => ({
+        index,
+        left: `${(index * 37) % 100}%`,
+        delay: `${(index % 12) * 0.35}s`,
+        duration: `${6 + (index % 7) * 0.8}s`,
+        size: `${1 + (index % 3)}px`,
+        opacity: 0.3 + (index % 5) * 0.12
+    }));
 
     let regularButtonsShown = true;
     let clientButtonsShown = false;
@@ -53,7 +59,14 @@
 </script>
 
 <div class="title-screen">
-    <FallingStarsBackground />
+    <div class="falling-stars" aria-hidden="true">
+        {#each titleStars as star (star.index)}
+            <span
+                class="falling-star"
+                style={`left: ${star.left}; animation-delay: ${star.delay}; animation-duration: ${star.duration}; width: ${star.size}; height: ${star.size}; opacity: ${star.opacity};`}
+            ></span>
+        {/each}
+    </div>
 
     {#if isAnniversary()}
         <ConfettiBackground />
@@ -75,7 +88,7 @@
                         <ChildButton title="Realms" icon="realms" {parentHovered}
                                      on:click={() => openScreen("multiplayer_realms")}/>
                     </MainButton>
-                    <MainButton title="Shine Client" icon="liquidbounce" on:click={toggleButtons} index={2}/>
+                    <MainButton title="Shine Client" icon="star" on:click={toggleButtons} index={2}/>
                     <MainButton title="Options" icon="options" on:click={() => openScreen("options")} index={3}/>
                 {:else if clientButtonsShown}
                     <MainButton title="Proxy Manager" icon="proxymanager" on:click={() => openScreen("proxymanager")}
@@ -94,17 +107,6 @@
                 </ButtonContainer>
             </div>
 
-            <div class="social-buttons" transition:fly|global={{duration: 700, y: 100}}>
-                <ButtonContainer>
-                    <IconButton title="Forum" icon="nodebb" on:click={() => browse("MAINTAINER_FORUM")}/>
-                    <IconButton title="GitHub" icon="github" on:click={() => browse("MAINTAINER_GITHUB")}/>
-                    <IconButton title="Discord" icon="discord" on:click={() => browse("MAINTAINER_DISCORD")}/>
-                    <IconButton title="Twitter" icon="twitter" on:click={() => browse("MAINTAINER_TWITTER")}/>
-                    <IconButton title="YouTube" icon="youtube" on:click={() => browse("MAINTAINER_YOUTUBE")}/>
-                    <IconTextButton title="shineclient.net" icon="icon-liquidbounce.net.svg"
-                                    on:click={() => browse("CLIENT_WEBSITE")}/>
-                </ButtonContainer>
-            </div>
         </div>
     </Menu>
 </div>
@@ -136,15 +138,53 @@
         opacity: 0.45;
     }
 
+
+    .falling-stars {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .falling-star {
+        position: absolute;
+        top: -8%;
+        border-radius: 999px;
+        background: #fff;
+        box-shadow: 0 0 8px rgb(150 220 255 / 80%);
+        animation: fall linear infinite;
+    }
+
+    .falling-star::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 44px;
+        height: 1px;
+        transform: translate(100%, -50%);
+        background: linear-gradient(90deg, rgb(180 230 255 / 70%), transparent);
+    }
+
+    @keyframes fall {
+        from {
+            transform: translate3d(0, -12vh, 0);
+        }
+        to {
+            transform: translate3d(-15vw, 120vh, 0);
+        }
+    }
+
     .content {
         flex: 1;
         display: grid;
         grid-template-areas:
-            "title ."
-            "a ."
-            "b c";
+            "title"
+            "a"
+            "b";
         grid-template-rows: max-content 1fr max-content;
-        grid-template-columns: 1fr max-content;
+        grid-template-columns: 1fr;
         row-gap: 24px;
     }
 
@@ -182,7 +222,4 @@
         grid-area: b;
     }
 
-    .social-buttons {
-        grid-area: c;
-    }
 </style>
