@@ -23,6 +23,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.ccbluex.liquidbounce.common.ClientLogoTexture;
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.events.ScreenRenderEvent;
 import net.ccbluex.liquidbounce.features.misc.HideAppearance;
@@ -59,7 +60,7 @@ public abstract class MixinLoadingOverlay {
     private static final int SUBTITLE_COLOR = ARGB.color(210, 190, 220, 255);
 
     @Unique
-    private static final int LOGO_SIZE = 80;
+    private static final int LOGO_WIDTH = 220;
 
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
@@ -94,15 +95,17 @@ public abstract class MixinLoadingOverlay {
         int centerY = graphics.guiHeight() / 2;
         var font = Minecraft.getInstance().font;
 
+        int logoHeight = Math.max(1, (int) (LOGO_WIDTH * (ClientLogoTexture.HEIGHT / (float) ClientLogoTexture.WIDTH)));
+
         graphics.blit(
                 ClientRenderPipelines.JCEF.SMOOTH_TEXTURE,
                 ClientLogoTexture.CLIENT_LOGO,
-                centerX - LOGO_SIZE / 2,
-                centerY - 96,
+                centerX - LOGO_WIDTH / 2,
+                centerY - 110,
                 0.0F,
                 0.0F,
-                LOGO_SIZE,
-                LOGO_SIZE,
+                LOGO_WIDTH,
+                logoHeight,
                 ClientLogoTexture.WIDTH,
                 ClientLogoTexture.HEIGHT,
                 ClientLogoTexture.WIDTH,
