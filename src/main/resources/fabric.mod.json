@@ -15,7 +15,7 @@
     "email": "support@shineclient.net"
   },
   "license": "GNU General Public License v3.0",
-  "icon": "resources/liquidbounce/icon_64x64.png",
+  "icon": "resources/liquidbounce/particles/star.png",
   "environment": "client",
   "entrypoints": {
     "main": []

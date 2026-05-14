@@ -64,7 +64,7 @@ public abstract class MixinLoadingOverlay {
 
     @Inject(method = "registerTextures", at = @At("RETURN"))
     private static void initializeTexture(TextureManager textureManager, CallbackInfo ci) {
-        textureManager.register(ClientLogoTexture.CLIENT_LOGO, new ClientLogoTexture());
+        textureManager.registerAndLoad(ClientLogoTexture.CLIENT_LOGO, new ClientLogoTexture());
     }
 
     @Inject(method = "extractRenderState", at = @At("RETURN"))
