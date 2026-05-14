@@ -25,6 +25,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.ccbluex.liquidbounce.features.module.modules.combat.ModuleSwordBlock;
+import net.ccbluex.liquidbounce.features.module.modules.render.ModuleArmChams;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAnimations;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleSilentHotbar;
 import net.ccbluex.liquidbounce.utils.client.SilentHotbar;
@@ -73,13 +74,19 @@ public abstract class MixinItemInHandRenderer {
         int overlayCoords, int outlineColor, Operation<Void> original, LivingEntity mob, ItemStack itemStack,
         ItemDisplayContext type
     ) {
+        int appliedLight = lightCoords;
+        if (type.firstPerson() && ModuleArmChams.INSTANCE.shouldApply() && ModuleArmChams.isAffectHeldItemsEnabled()) {
+            appliedLight = ModuleArmChams.INSTANCE.isFullBright() ? 0x00F000F0 : lightCoords;
+        }
+        final int finalAppliedLight = appliedLight;
+
         if (itemStack.getItem() instanceof ShieldItem && type.firstPerson()) {
             FirstPersonShieldTint.render(
-                () -> original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor));
+                () -> original.call(instance, poseStack, submitNodeCollector, finalAppliedLight, overlayCoords, outlineColor));
             return;
         }
 
-        original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+        original.call(instance, poseStack, submitNodeCollector, finalAppliedLight, overlayCoords, outlineColor);
     }
 
     @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER))
@@ -153,6 +160,26 @@ public abstract class MixinItemInHandRenderer {
         }
 
         return equipProgress;
+    }
+
+    @WrapOperation(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderPlayerArm(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;IFFLnet/minecraft/world/entity/HumanoidArm;)V"))
+    private void hookHandsChamsColor(
+        ItemInHandRenderer instance,
+        PoseStack poseStack,
+        SubmitNodeCollector submitNodeCollector,
+        int light,
+        float equipProgress,
+        float swingProgress,
+        net.minecraft.world.entity.HumanoidArm arm,
+        Operation<Void> original
+    ) {
+        if (!ModuleArmChams.INSTANCE.shouldApply()) {
+            original.call(instance, poseStack, submitNodeCollector, light, equipProgress, swingProgress, arm);
+            return;
+        }
+
+        int targetLight = ModuleArmChams.INSTANCE.isFullBright() ? 0x00F000F0 : light;
+        original.call(instance, poseStack, submitNodeCollector, targetLight, equipProgress, swingProgress, arm);
     }
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"))

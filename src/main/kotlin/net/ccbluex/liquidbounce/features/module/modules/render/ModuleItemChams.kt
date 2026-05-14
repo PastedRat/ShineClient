@@ -53,8 +53,6 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
 
     object Lightmap : ToggleableValueGroup(this, "Lightmap", true) {
         private val blendColor by color("BlendColor", Color4b(0, 64, 255, 186)).markDirtyOnChanged()
-        private val rgbBlend by boolean("RgbHands", false).markDirtyOnChanged()
-        private val rgbSpeed by float("RgbSpeed", 1.5f, 0.2f..6f).markDirtyOnChanged()
         private val alpha by int("Alpha", 95, 1..255).markDirtyOnChanged()
         private val glowColor by color("GlowColor", Color4b(0, 64, 255, 15)).markDirtyOnChanged()
         private val layers by int("Layers", 3, 1..10).markDirtyOnChanged()
@@ -65,21 +63,13 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
 
         private var storedLightmapTexture: GpuTexture? = null
 
-        private val UBO = ClientUniformDefine.HAND_ITEM_LIGHTMAP.createSingleBuffer()
+        private val UBO by lazy { ClientUniformDefine.HAND_ITEM_LIGHTMAP.createSingleBuffer() }
 
         private var uboDirty = true
         private fun <T : Any> Value<T>.markDirtyOnChanged() = onChanged { uboDirty = true }
 
-        private val sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR, false)
-
         private fun getActiveBlendColor(): Color4b {
-            if (!rgbBlend) return blendColor
-
-            val t = (System.currentTimeMillis() / 1000.0) * rgbSpeed
-            val r = ((kotlin.math.sin(t) * 0.5 + 0.5) * 255.0).toInt().coerceIn(0, 255)
-            val g = ((kotlin.math.sin(t + 2.09439510239) * 0.5 + 0.5) * 255.0).toInt().coerceIn(0, 255)
-            val b = ((kotlin.math.sin(t + 4.18879020479) * 0.5 + 0.5) * 255.0).toInt().coerceIn(0, 255)
-            return Color4b(r, g, b, blendColor.a)
+            return blendColor
         }
 
         fun applyToTexture(textureView: GpuTextureView) {
@@ -92,10 +82,6 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
                 )
             } else {
                 this.storedLightmapTexture!!.copyFrom(source = textureView.texture())
-            }
-
-            if (rgbBlend) {
-                uboDirty = true
             }
 
             if (uboDirty) {
@@ -115,6 +101,7 @@ object ModuleItemChams : ClientModule("ItemChams", ModuleCategories.RENDER) {
                 { "$name Pass" },
                 clearColor = optional(-1),
             ).use { pass ->
+                val sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR, false)
                 pass.setPipeline(ClientRenderPipelines.ItemChams)
 
                 pass.bindTexture("texture0", textureView, sampler)

@@ -139,8 +139,11 @@ public abstract class MixinGameRenderer {
                                SubmitNodeCollector submitNodeCollector, LocalPlayer player, int lightCoords,
                                Operation<Void> original) {
         ModuleItemChams.Lightmap.INSTANCE.applyToTexture(this.lightmap.getTextureView());
-        original.call(instance, frameInterp, poseStack, submitNodeCollector, player, lightCoords);
-        ModuleItemChams.Lightmap.INSTANCE.resetTexture(this.lightmap.getTextureView());
+        try {
+            original.call(instance, frameInterp, poseStack, submitNodeCollector, player, lightCoords);
+        } finally {
+            ModuleItemChams.Lightmap.INSTANCE.resetTexture(this.lightmap.getTextureView());
+        }
     }
 
     /**

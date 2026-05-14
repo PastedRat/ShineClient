@@ -184,6 +184,7 @@ import net.ccbluex.liquidbounce.features.module.modules.player.offhand.ModuleOff
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAnimations
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAntiBlind
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAspect
+import net.ccbluex.liquidbounce.features.module.modules.render.ModuleArmChams
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAutoF5
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleBedPlates
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleBetterInventory
@@ -202,7 +203,6 @@ import net.ccbluex.liquidbounce.features.module.modules.render.ModuleFreeLook
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleFullBright
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleHoleESP
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleHud
-import net.ccbluex.liquidbounce.features.module.modules.render.ModuleItemChams
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleItemESP
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleItemTags
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleJumpEffect
@@ -666,7 +666,7 @@ object ModuleManager : EventListener, Collection<ClientModule> by modules {
             ModuleXRay,
             ModuleDebug,
             ModuleZoom,
-            ModuleItemChams,
+            ModuleArmChams,
             ModuleCrystalView,
             ModuleSkinChanger,
             ModuleProtectionZones,
